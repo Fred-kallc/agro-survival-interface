@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM: AGRO-SURVIVAL v2.0</title>
+    <style>
+        :root {
+            --bg: #0a0d0a;
+            --neon: #39ff14;
+            --dim-neon: rgba(57, 255, 20, 0.3);
+            --danger: #ff3131;
+            --action: #3ccaff;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--neon);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Pulsing Status Bar */
+        .status-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--dim-neon);
+        }
+        .status-bar-fill {
+            height: 100%;
+            width: 40%;
+            background: var(--neon);
+            box-shadow: 0 0 10px var(--neon);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { width: 10%; opacity: 0.5; }
+            50% { width: 90%; opacity: 1; }
+            100% { width: 10%; opacity: 0.5; }
+        }
+
+        .container {
+            border: 1px solid var(--neon);
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            background: rgba(0, 20, 0, 0.8);
+            box-shadow: 0 0 20px var(--dim-neon);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            animation: flicker 3s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 22%, 24%, 55% { opacity: 0.4; }
+        }
+
+        .stats {
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            color: var(--action);
+        }
+
+        #display-area {
+            min-height: 200px;
+            margin: 20px 0;
+            padding: 15px;
+            border-top: 1px solid var(--dim-neon);
+            text-align: left;
+        }
+
+        .label { font-weight: bold; margin-right: 10px; }
+        .problem { color: #fff; }
+        .risk { color: var(--danger); }
+        .action { color: var(--action); }
+        .result { color: var(--neon); }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid var(--neon);
+            color: var(--neon);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: var(--neon);
+            color: var(--bg);
+            box-shadow: 0 0 15px var(--neon);
+        }
+
+        .leaf {
+            position: fixed;
+            top: -50px;
+            font-size: 24px;
+            z-index: 1000;
+            user-select: none;
+            pointer-events: none;
+            animation: fall 3s linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="status-bar"><div class="status-bar-fill"></div></div>
+
+    <div class="container">
+        <h1>SYSTEM: CLIMATE RESILIENCE v2.0</h1>
+        <div class="stats" id="stats">SCANS RUN: 0 | SYSTEM STATUS: OPTIMAL</div>
+        
+        <div id="display-area">
+            <p style="text-align:center; opacity:0.6;">[ INITIALIZE SYSTEM SCAN TO PROCEED ]</p>
+        </div>
+
+        <div class="btn-group">
+            <button id="scanBtn">SCAN ENVIRONMENT</button>
+            <button id="deployBtn">DEPLOY SOLUTION</button>
+        </div>
+    </div>
+
+    <script>
+        let scanCount = 0;
+        const scanBtn = document.getElementById('scanBtn');
+        const deployBtn = document.getElementById('deployBtn');
+        const displayArea = document.getElementById('display-area');
+        const statsDisplay = document.getElementById('stats');
+
+        const scenarios = [
+            {
+                problem: "Severe Soil Nitrogen Depletion",
+                risk: "Total Crop Failure / Food Insecurity",
+                action: "Intercrop with Gliricidia sepium (Mother of Cocoa)",
+                result: "Natural nitrogen fixation increased by 40%."
+            },
+            {
+                problem: "Extreme Heatwave / Soil Evaporation",
+                risk: "Seedling Mortality",
+                action: "Strategic Canopy Cover via Faidherbia albida",
+                result: "Reverse phenology provides shade in dry season."
+            },
+            {
+                problem: "Flash Flooding / Topsoil Erosion",
+                risk: "Loss of Arable Land",
+                action: "Establish Vetiver Grass Buffer Strips",
+                result: "Soil retention stabilized; runoff velocity reduced."
+            },
+            {
+                problem: "Pest Outbreak (Fall Armyworm)",
+                risk: "70% Yield Reduction",
+                action: "Implement 'Push-Pull' system with Desmodium",
+                result: "Natural pest repulsion without toxic chemicals."
+            }
+        ];
+
+        function renderScenario(s) {
+            displayArea.innerHTML = `
+                <div style="color:var(--action); margin-bottom:10px; font-size:0.7rem;">> ANALYSIS COMPLETE: 100% MATCH FOUND</div>
+                <div class="scenario-section"><span class="label problem">CRISIS:</span><span>${s.problem}</span></div>
+                <div class="scenario-section"><span class="label risk">THREAT:</span><span>${s.risk}</span></div>
+                <div class="scenario-section"><span class="label action">MITIGATION:</span><span>${s.action}</span></div>
+                <div class="scenario-section"><span class="label result">OUTCOME:</span><span>${s.result}</span></div>
+            `;
+        }
+
+        scanBtn.addEventListener('click', () => {
+            scanCount++;
+            statsDisplay.innerText = `SCANS RUN: ${scanCount} | SYSTEM STATUS: PROCESSING...`;
+            
+            const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+            
+            displayArea.innerHTML = `<p style="text-align:center;">SCANNING...</p>`;
+            
+            setTimeout(() => {
+                renderScenario(scenario);
+                statsDisplay.innerText = `SCANS RUN: ${scanCount} | SYSTEM STATUS: OPTIMAL`;
+            }, 800);
+        });
+
+        deployBtn.addEventListener('click', () => {
+            for (let i = 0; i < 15; i++) {
+                const leaf = document.createElement("div");
+                leaf.classList.add("leaf");
+                leaf.innerText = "🍃";
+                leaf.style.left = Math.random() * 100 + "vw";
+                leaf.style.animationDuration = (Math.random() * 2 + 2) + "s";
+                document.body.appendChild(leaf);
+                setTimeout(() => leaf.remove(), 4000);
+            }
+        });
+    </script>
+</body>
+</html>
